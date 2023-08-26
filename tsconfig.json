@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "es2020",
     "lib": [
       "dom",
       "dom.iterable",
@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "lib/apollo-wrapper.tsx"  ],
   "exclude": [
     "node_modules"
   ]

@@ -1,5 +1,12 @@
 import './globals.css'
-import { ApolloWrapper } from "../../lib/apollo-wrapper";
+
+import { Montserrat } from 'next/font/google'
+
+export const montserrat = Montserrat({
+  subsets : ['latin'],
+  display : 'swap',
+  variable : '--Montserrat'
+})
 
 export default function RootLayout({
   children,
@@ -7,9 +14,9 @@ export default function RootLayout({
   children: React.ReactNode,
 }) {
   return (
-    <html lang="en">
-      <body>
-        <ApolloWrapper>{children}</ApolloWrapper>
+    <html lang="en" className={`${montserrat.variable} `}>
+      <body className='w-full flex flex-col items-center overflow-x-visible -z-50'>
+        {children}
       </body>
     </html>
   );
