@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-
 import { PrismaClient, Song } from "@prisma/client";
+
 const prisma = new PrismaClient();
 
 const res = NextResponse;

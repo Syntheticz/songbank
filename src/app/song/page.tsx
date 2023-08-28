@@ -21,8 +21,8 @@ export default function page() {
   
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/song`)
-      const data : Array<Song> = res.data
+      const res = await fetch('/api/song')
+      const data : Array<Song> = await res.json()
 
       setSongs(data)
     }
@@ -30,7 +30,6 @@ export default function page() {
     fetchData()
   } ,[])
 
-  console.log(songs)
 
   const cards = songs.length > 0 ? 
     songs.map((song) => {

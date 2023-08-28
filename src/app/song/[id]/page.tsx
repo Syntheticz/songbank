@@ -7,7 +7,7 @@ import axios from 'axios'
 import { Song } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 
-
+let apiLink = process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC_API_BASE_URL : process.env.PRODUCTION_URL
 
 const option = ["PRELUDE", "RESPONSE", "ADULT", "YOUTH", "SPECIAL"]
 
@@ -32,7 +32,7 @@ export default function page({ params } : { params : { id : string}}) {
 
 
     try {
-      const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/song/${params.id}`, rawData)
+      const res = await axios.put(`${apiLink}/song/${params.id}`, rawData)
       setDisabled(true)
       window.location.reload()
     } catch (error) {
@@ -43,8 +43,9 @@ export default function page({ params } : { params : { id : string}}) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/song/${params.id}`)
-        setSong(res.data)
+        const res = await fetch(`/api/song/${params.id}`)
+        const data = await res.json()
+        setSong(data)
       } catch (error) {
         console.log(error)
       }
@@ -78,7 +79,7 @@ export default function page({ params } : { params : { id : string}}) {
     if(rawData.removal){
       try {
         const updateData = async () => {
-          const res = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/song/${params.id}`, rawData)
+          const res = await axios.put(`${apiLink}/song/${params.id}`, rawData)
          
         }
 

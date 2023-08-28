@@ -16,7 +16,6 @@ import { useRouter } from 'next/navigation';
 
 
 
-
 export default function Home() {
 
   const [songs, setSongs] = useState<Array<Song>>([])
@@ -24,11 +23,13 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/song`)
-      const data : Array<Song> = res.data
+      const res = await fetch('/api/song')
+      const data : Array<Song> = await res.json()
 
       setSongs(data)
     }
+
+    
 
     fetchData()
   } ,[])

@@ -8,6 +8,7 @@ import React, { useState } from 'react'
 const songType = ["Worship", "Praise"]
 const category = ["New Song", "Old Song", "Composed"]
 
+let apiLink = process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC_API_BASE_URL : process.env.PRODUCTION_URL
 
 import { Song } from '@prisma/client'
 import { v4 as uuidv4 } from 'uuid';
@@ -51,7 +52,7 @@ export default function page() {
     e.preventDefault()
 
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/song`, rawData)
+      const res = await axios.post(`${apiLink}/song`, rawData)
       setRawdata(emptyRawData)
     } catch (error) {
       console.log(error)

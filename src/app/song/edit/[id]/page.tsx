@@ -28,6 +28,8 @@ const emptyRawData : Song = {
     lyrics : " ",
 }
 
+const apiLink = process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC_API_BASE_URL : process.env.PRODUCTION_URL
+
 export default function page({ params } : { params : { id : string}}) {
  
   const router = useRouter()
@@ -48,8 +50,8 @@ export default function page({ params } : { params : { id : string}}) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/song/${params.id}`)
-      const data : Song = res.data
+      const res = await fetch('/api/song')
+      const data : Song = await res.json()
       setRawdata(data)
     }
 
@@ -62,7 +64,7 @@ export default function page({ params } : { params : { id : string}}) {
     e.preventDefault()
 
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/song/${params.id}`, rawData)
+      const res = await axios.post(`${apiLink}/song/${params.id}`, rawData)
       setRawdata(emptyRawData)
 
       router.push(`/song/${params.id}`)
