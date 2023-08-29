@@ -50,13 +50,14 @@ export default function page({ params } : { params : { id : string}}) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch('/api/song')
+      const res = await fetch(`/api/song/${params.id}`)
       const data : Song = await res.json()
       setRawdata(data)
     }
 
     fetchData()
   }, [])
+  
 
   
 
@@ -77,7 +78,7 @@ export default function page({ params } : { params : { id : string}}) {
     e.preventDefault()
 
     try {
-      const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/song/${params.id}`)
+      const res = await axios.delete(`${apiLink}/song/${params.id}`)
 
       router.push(`/song`)
     } catch (error) {

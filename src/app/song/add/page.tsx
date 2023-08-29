@@ -54,6 +54,7 @@ export default function page() {
     try {
       const res = await axios.post(`${apiLink}/song`, rawData)
       setRawdata(emptyRawData)
+      router.push('/song')
     } catch (error) {
       console.log(error)
     }

@@ -26,6 +26,7 @@ export default function page({ params } : { params : { id : string}}) {
   const [disabled, setDisabled] = useState(false)
   const router = useRouter()
   const [song, setSong] = useState<Song>()
+  const [linupDate, setLinupDate] = useState<string>()
 
   async function handleOnClick(e : React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault()
@@ -52,6 +53,7 @@ export default function page({ params } : { params : { id : string}}) {
     }
 
     fetchData()
+
   }, [])
   
 
@@ -59,6 +61,10 @@ export default function page({ params } : { params : { id : string}}) {
   useEffect(() => {
     if(!song){
       return
+    }
+
+    if (song.lineupDate){
+      setLinupDate(new Date(song.lineupDate).toLocaleDateString("en-US", {weekday : 'long', month : 'long', day : 'numeric', year : 'numeric'}) || '')
     }
 
     if(song.linupType){
@@ -94,6 +100,8 @@ export default function page({ params } : { params : { id : string}}) {
     
   }, [rawData.removal])
 
+  console.log(song?.lyrics)
+
 
   return (
     <div className='w-full'>
@@ -101,7 +109,8 @@ export default function page({ params } : { params : { id : string}}) {
       {song != undefined ?
         <div className='w-full'>
         {disabled ? <div className='w-full px-6'>
-          <p className='font-montserrat font-bold text-2xl' >Linuped for: {song.linupType}</p>
+          <p className='font-montserrat font-bold text-2xl' >Line-Up for: {song.linupType}</p>
+          <p className='font-montserrat font-semibold'>{linupDate}</p>
         </div> : null}
         <div className='w-full p-6 flex flex-col'>
           <div className='w-full mb-10'>

@@ -10,16 +10,17 @@ import Footer from '@/components/Footer';
 
 import SongCard from '@/components/SongCard';
 import { Song } from '@prisma/client';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
-
-
 
 
 export default function Home() {
 
   const [songs, setSongs] = useState<Array<Song>>([])
   const router = useRouter()
+  const [sunday, setSunday] = useState<string>('')
+  const [sundayDate, setSundayDate] = useState<Date>()
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,13 +30,25 @@ export default function Home() {
       setSongs(data)
     }
 
-    
-
     fetchData()
+
+    const currentDate = new Date()
+    const daysUntilSunday = 7 - currentDate.getDay()
+    const upcomingSunday = new Date(currentDate)
+    upcomingSunday.setDate(currentDate.getDate() + daysUntilSunday)
+    
+    setSundayDate(upcomingSunday)
+
   } ,[])
+
+  useEffect(() => {
+    setSunday(sundayDate?.toLocaleDateString("en-US", {weekday : 'long', month : 'long', day : 'numeric', year : 'numeric'}) || '')
+    
+  }, [sundayDate])
 
   const cards = songs.length > 0 ? 
     songs.map((song) => {
+
       return <SongCard onClick={(e) => {
         router.push(`/song/${song.id}`)
       }} artist={song.artist} lyrics={song.lyrics} title={song.title} key={song.id}/>
@@ -44,7 +57,10 @@ export default function Home() {
 
   const preludeCards = songs.length > 0 ? 
   songs.map((song, index) => {
-    if(song.linupType !== "PRELUDE"){
+    const date = sundayDate?.toISOString().substring(10, 0)
+    const linupDate = song.lineupDate ? new Date(song.lineupDate).toISOString().substring(10, 0) : ''
+
+    if(song.linupType !== "PRELUDE" || date !== linupDate){
       return null
     }
 
@@ -54,41 +70,50 @@ export default function Home() {
   })
 : []
 
-const responseCards = songs.length > 0 ? 
-songs.map((song, index) => {
-  if(song.linupType !== "RESPONSE"){
-    return null
-  }
+  const responseCards = songs.length > 0 ? 
+  songs.map((song, index) => {
+    const date = sundayDate?.toISOString().substring(10, 0)
+    const linupDate = song.lineupDate ? new Date(song.lineupDate).toISOString().substring(10, 0) : ''
 
-  return <LineupCard onClick={(e) => {
-    router.push(`/song/${song.id}`) 
-  }} color={index % 2 === 0 ? 'bg-primary' : 'bg-secondary'} artist={song.artist} title={song.title} key={song.id}/>
-})
-: []
+    if(song.linupType !== "RESPONSE" || date !== linupDate){
+      return null
+    }
 
-const adultCards = songs.length > 0 ? 
-songs.map((song, index) => {
-  if(song.linupType !== "ADULT"){
-    return null
-  }
+    return <LineupCard onClick={(e) => {
+      router.push(`/song/${song.id}`) 
+    }} color={index % 2 === 0 ? 'bg-primary' : 'bg-secondary'} artist={song.artist} title={song.title} key={song.id}/>
+  })
+  : []
 
-  return <LineupCard onClick={(e) => {
-    router.push(`/song/${song.id}`) 
-  }} color={index % 2 === 0 ? 'bg-primary' : 'bg-secondary'} artist={song.artist} title={song.title} key={song.id}/>
-})
-: []
+  const adultCards = songs.length > 0 ? 
+  songs.map((song, index) => {
+    const date = sundayDate?.toISOString().substring(10, 0)
+    const linupDate = song.lineupDate ? new Date(song.lineupDate).toISOString().substring(10, 0) : ''
 
-const youthCards = songs.length > 0 ? 
-songs.map((song, index) => {
-  if(song.linupType !== "YOUTH"){
-    return null
-  }
+    if(song.linupType !== "ADULT" || date !== linupDate){
+      return null
+    }
 
-  return <LineupCard onClick={(e) => {
-    router.push(`/song/${song.id}`) 
-  }} color={index % 2 === 0 ? 'bg-primary' : 'bg-secondary'} artist={song.artist} title={song.title} key={song.id}/>
-})
-: []
+    return <LineupCard onClick={(e) => {
+      router.push(`/song/${song.id}`) 
+    }} color={index % 2 === 0 ? 'bg-primary' : 'bg-secondary'} artist={song.artist} title={song.title} key={song.id}/>
+  })
+  : []
+
+  const youthCards = songs.length > 0 ? 
+  songs.map((song, index) => {
+    const date = sundayDate?.toISOString().substring(10, 0)
+    const linupDate = song.lineupDate ? new Date(song.lineupDate).toISOString().substring(10, 0) : ''
+
+    if(song.linupType !== "YOUTH" || date !== linupDate){
+      return null
+    }
+
+    return <LineupCard onClick={(e) => {
+      router.push(`/song/${song.id}`) 
+    }} color={index % 2 === 0 ? 'bg-primary' : 'bg-secondary'} artist={song.artist} title={song.title} key={song.id}/>
+  })
+  : []
 
 
   return (
@@ -100,6 +125,9 @@ songs.map((song, index) => {
             <div className='w-full flex overflow-x-auto gap-4'>
                 {cards}
             </div>
+          </div>
+          <div className='w-full h-14 bg-gray-100 flex justify-center items-center'>
+            <p className='font-montserrat md:text-xl  font-bold'>Line-Up for: {sunday}</p>
           </div>
           <Category title={"Prelude"} cards={preludeCards.every(element => element === null) ? [] : preludeCards}/>
           <Category title={"Response"} cards={responseCards.every(element => element === null) ? [] : responseCards}/>

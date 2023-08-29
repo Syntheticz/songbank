@@ -8,6 +8,14 @@ const res = NextResponse;
 export async function GET(req: Request) {
   const songs = await prisma.song.findMany({
     orderBy: { title: "asc" },
+    select: {
+      id: true,
+      artist: true,
+      title: true,
+      lyrics: true,
+      lineupDate: true,
+      linupType: true,
+    },
   });
 
   return res.json(songs);

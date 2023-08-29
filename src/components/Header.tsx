@@ -13,6 +13,7 @@ import Link from 'next/link';
 export default function Header() {
   const [clicked, setClicked] = useState(false)
   const [rotation, setRotation] = useState(false)
+  const [searching, setSearching] = useState(false)
 
   useEffect(() => {
     if(!clicked){
@@ -32,18 +33,16 @@ export default function Header() {
       <div onClick={() => {setClicked(false)}} className={`duration-300 ease-in-out h-full ${clicked ? "w-full " : "w-0"} bg-black bg-opacity-40 fixed top-0 right-0 z-0`}>
         <div className={`bg-primary z-30  w-[60%] h-[100%] absolute right-0 top-0`}>
             <div onClick={() => {router.push('/')}} className='w-full mt-32 h-[160px] flex flex-col items-center justify-center'>
-              <Image src={Logo} alt='Logo' width={100} height={100} objectFit={'contain'}/>
-             
+              <Image className='cursor-pointer' src={Logo} alt='Logo' width={100} height={100} objectFit={'contain'}/>
             </div>
-
             <div onClick={() => {router.push('/')}} className='w-full h-14 bg-tertiary mt-8 flex items-center px-4'>
-              <p className='text-white font-montserrat text-2xl font-semibold'>Home</p>
+              <p className='cursor-pointer text-white font-montserrat text-2xl font-semibold'>Home</p>
             </div>
             <div onClick={() => {router.push('/song/add')}} className='w-full h-14 bg-tertiary flex items-center px-4'>
-              <p className='text-white font-montserrat text-2xl font-semibold'>Add Song</p>
+              <p className='cursor-pointer text-white font-montserrat text-2xl font-semibold'>Add Song</p>
             </div>
             <div onClick={() => {router.push('/song/')}} className='w-full h-14 bg-tertiary flex items-center px-4'>
-              <p className='text-white font-montserrat text-2xl font-semibold'>View Songs</p>
+              <p className='cursor-pointer text-white font-montserrat text-2xl font-semibold'>View Songs</p>
             </div>
            
 
@@ -51,7 +50,6 @@ export default function Header() {
       </div>
 
       <div className='w-full h-full flex items-center justify-end '>
-        <Image className={`${clicked ? "hidden" : "block"}`}   src={Search} alt={'Logo'}/>
         <button onClick={() => {
           setClicked(clicked ? false : true)
         }} className={` z-20 w-[44px] h-[44px] duration-300 ease-in-out ${clicked ? 'block' : 'flex flex-col'} ${clicked ? 'fixed' : 'block'}`} >
@@ -59,12 +57,8 @@ export default function Header() {
           <hr className={`w-full my-auto duration-300 ease-in-out h-2 border-none rounded-md ${rotation ? 'rotate-45' : 'block'} ${clicked ? 'bg-white' : 'bg-primary'} `} />
           <hr className={`w-full my-auto duration-300 ease-in-out h-2 border-none rounded-md ${clicked ? '-translate-y-full' : 'block'} ${rotation ? '-rotate-45' : 'block'} ${clicked ? 'bg-white' : 'bg-primary'}`}/>
         </button>
-        
+      </div> 
 
-
-      </div>
-
-      
   </div>
   )
 }
