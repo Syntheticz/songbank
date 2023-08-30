@@ -122,7 +122,7 @@ export default function Home() {
         <div className='w-full relative flex flex-col gap-8'>
           <div className='w-full px-6 flex gap-2 flex-col'>
             <p className='font-montserrat text-2xl font-bold tracking-wide'>Songs</p>
-            <div className='w-full flex overflow-x-auto gap-4'>
+            <div className='w-full flex overflow-x-scroll gap-4'>
                 {cards}
             </div>
           </div>

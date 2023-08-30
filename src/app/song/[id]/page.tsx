@@ -6,6 +6,7 @@ import React, { use, useEffect, useState } from 'react'
 import axios from 'axios'
 import { Song } from '@prisma/client'
 import { useRouter } from 'next/navigation'
+import { v4 as uuidv4 } from 'uuid'
 
 let apiLink = process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC_API_BASE_URL : process.env.PRODUCTION_URL
 
@@ -14,6 +15,8 @@ const option = ["PRELUDE", "RESPONSE", "ADULT", "YOUTH", "SPECIAL"]
 const options = option.map((option) => (
   <option key={option} value={option}>{option}</option>
 ))
+
+
 
 export default function page({ params } : { params : { id : string}}) {
 
@@ -27,11 +30,11 @@ export default function page({ params } : { params : { id : string}}) {
   const router = useRouter()
   const [song, setSong] = useState<Song>()
   const [linupDate, setLinupDate] = useState<string>()
+  const [lyrics, setLyrics] = useState<React.JSX.Element[] | React.JSX.Element>()
 
   async function handleOnClick(e : React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault()
-
-
+    
     try {
       const res = await axios.put(`${apiLink}/song/${params.id}`, rawData)
       setDisabled(true)
@@ -40,6 +43,42 @@ export default function page({ params } : { params : { id : string}}) {
       console.log(error)
     }
   }
+
+  //Handles Song Chords and lyrics Generation
+  useEffect(() => {
+    if(!song?.lyrics) { return }
+  
+    const lyricArray = song.lyrics.split('\n').map((line) => {return line === '' ? '\n' : line})
+    const lyricComponent = lyricArray.map((line) =>{
+        const regex = /\[([A-G][#bm]?(?:\d{1,2}|maj7?|min7?|sus2?)?)\]/g
+      
+        if(regex.test(line)){
+            const reg = /\[([A-Z][#bm]?(?:\d{1,2}|maj7?|min7?|sus2?)?)\]/g
+            const matches = line.split(reg);
+
+            const spans = matches.map((char) => {
+              const regChar = /([A-Z][#bm]?(?:\d{1,2}|maj7?|min7?|sus2?)?)/g
+              
+              if(regChar.test(char)){
+                return <span key={uuidv4()} className='font-semibold
+                 text-primary bg-gray-200 px-1 rounded-md'>{char}</span>
+              }
+              return <span key={uuidv4()}>{char}</span>
+            })
+            
+            return <span key={uuidv4()} className='flex'>
+                {spans}
+            </span>
+        }
+
+        return <span key={uuidv4()}>{line}</span>
+      }
+    )
+    
+    setLyrics(lyricComponent)
+    
+
+  }, [song?.lyrics])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,8 +139,6 @@ export default function page({ params } : { params : { id : string}}) {
     
   }, [rawData.removal])
 
-  console.log(song?.lyrics)
-
 
   return (
     <div className='w-full'>
@@ -117,8 +154,8 @@ export default function page({ params } : { params : { id : string}}) {
             <p className='font-montserrat font-bold text-[32px]'>{song.title}</p>
             <p className='font-montserrat font-semibold text-[14px] mt-[-8px]'>By: {song.artist}</p>
           </div>
-          <p className='whitespace-pre-wrap font-montserrat font-medium'>
-            {song.lyrics}
+          <p className='w-full whitespace-pre-wrap text-sm flex flex-col font-montserrat font-medium'>
+            {lyrics}
           </p>
 
           <div className='w-full mt-10 flex gap-6'>
