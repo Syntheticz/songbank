@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
+import { authConfig } from '../lib/auth';
 import Image from 'next/image';
 import Search from '../../public/Search.svg'
 import Menu from '../../public/Menu.svg'
@@ -8,12 +9,31 @@ import logo from '../../public/logo.png'
 import Logo from '../../public/Logooo.png'
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react'
+import  { useSession } from 'next-auth/react'
+import { isUserAdmin } from '@/lib/serverHelper';
 
+let BASE_URL = process.env.NODE_ENV === "development" ? process.env.BASE_URL : process.env.PROD_URL
 
 export default function Header() {
   const [clicked, setClicked] = useState(false)
   const [rotation, setRotation] = useState(false)
   const [searching, setSearching] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  const session = useSession();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      if(session.status === 'authenticated') {
+        const user = await isUserAdmin()
+
+        setIsAdmin(user)
+      }
+    }
+
+    checkUser()
+  }, [session])
 
   useEffect(() => {
     if(!clicked){
@@ -25,6 +45,11 @@ export default function Header() {
   }, [clicked])
 
   const router = useRouter()
+  
+
+   function handleOnClick() {
+      signOut({ callbackUrl : `${BASE_URL}`})
+    }
 
   return (
     <div className='min-w-[360px] w-full h-[64px] px-[8px] bg-white py-[4px] flex top-0 items-center shadow-lg mb-8 md:mb-4 sticky z-[999]'>
@@ -38,18 +63,21 @@ export default function Header() {
             <div onClick={() => {router.push('/')}} className='w-full h-14 bg-tertiary mt-8 flex items-center px-4'>
               <p className='cursor-pointer text-white font-montserrat text-2xl font-semibold'>Home</p>
             </div>
-            <div onClick={() => {router.push('/song/add')}} className='w-full h-14 bg-tertiary flex items-center px-4'>
+            {isAdmin ? <div onClick={() => {router.push('/song/add')}} className='w-full h-14 bg-tertiary flex items-center px-4'>
               <p className='cursor-pointer text-white font-montserrat text-2xl font-semibold'>Add Song</p>
-            </div>
+            </div> : null}
             <div onClick={() => {router.push('/song/')}} className='w-full h-14 bg-tertiary flex items-center px-4'>
               <p className='cursor-pointer text-white font-montserrat text-2xl font-semibold'>View Songs</p>
+            </div>
+            <div onClick={() => {handleOnClick()}} className='w-full h-14 bg-tertiary flex items-center px-4'>
+              <p className='cursor-pointer text-white font-montserrat text-2xl font-semibold'>Logout</p>
             </div>
            
 
         </div>
       </div>
 
-      <div className='w-full h-full flex items-center justify-end '>
+      <div className={`w-full h-full flex items-center justify-end ${session.status !== "authenticated" ? "hidden" : ""}`}>
         <button onClick={() => {
           setClicked(clicked ? false : true)
         }} className={` z-20 w-[44px] h-[44px] duration-300 ease-in-out ${clicked ? 'block' : 'flex flex-col'} ${clicked ? 'fixed' : 'block'}`} >

@@ -51,7 +51,7 @@ export default function page() {
   useEffect(() => {
     if (!searching) { return }
 
-    setQueriedSongs(songs.filter(song => song.title.includes(query)))
+    setQueriedSongs(songs.filter(song => song.title.toLowerCase().includes(query.toLowerCase())))
 
     setCards(queriedSongs.map((song) => {
       return <SongCard onClick={(e) => {

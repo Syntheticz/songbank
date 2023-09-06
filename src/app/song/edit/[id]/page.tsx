@@ -13,6 +13,9 @@ import { Song } from '@prisma/client'
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { loginIsRequiredClient } from '@/lib/clientHelper'
+import { useSession } from 'next-auth/react'
+import { isUserAdmin } from '@/lib/serverHelper'
 
 const emptyRawData : Song = {
     id : '',
@@ -31,8 +34,24 @@ const emptyRawData : Song = {
 const apiLink = process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC_API_BASE_URL : process.env.PRODUCTION_URL
 
 export default function page({ params } : { params : { id : string}}) {
+  loginIsRequiredClient()
  
   const router = useRouter()
+  const session = useSession()
+
+  useEffect(() => {
+    const checkUser = async () => {
+      if(session.status === 'authenticated') {
+        const user = await isUserAdmin()
+
+        if(!user){
+          router.push('/')
+        }
+      }
+    }
+
+    checkUser()
+  }, [session])
 
   const [rawData, setRawdata] = useState<Song>({
     id : '',
@@ -87,7 +106,7 @@ export default function page({ params } : { params : { id : string}}) {
   }
 
 
-  return (
+  return ( session.status === 'authenticated' ?
     <div className='w-full'>
       <Header/>
       <div className='w-full flex flex-col gap-4'>
@@ -123,5 +142,5 @@ export default function page({ params } : { params : { id : string}}) {
       </div>
       <Footer/>
     </div>
-  )
+  : null)
 }

@@ -3,7 +3,7 @@
 import Dropdown from '@/components/Dropdown'
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const songType = ["Worship", "Praise"]
 const category = ["New Song", "Old Song", "Composed"]
@@ -14,6 +14,9 @@ import { Song } from '@prisma/client'
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import { loginIsRequiredClient } from '@/lib/clientHelper'
+import { useSession } from 'next-auth/react'
+import { isUserAdmin } from '@/lib/serverHelper'
 
 const emptyRawData : Song = {
     id : '',
@@ -30,6 +33,24 @@ const emptyRawData : Song = {
 }
 
 export default function page() {
+
+  loginIsRequiredClient()
+
+  const session = useSession()
+
+  useEffect(() => {
+    const checkUser = async () => {
+      if(session.status === 'authenticated') {
+        const user = await isUserAdmin()
+
+        if(!user){
+          router.push('/')
+        }
+      }
+    }
+
+    checkUser()
+  }, [session])
  
   const router = useRouter()
   const [rawData, setRawdata] = useState<Song>({
@@ -61,7 +82,7 @@ export default function page() {
   }
 
 
-  return (
+  return ( session.status === 'authenticated' ? 
     <div className='w-full'>
       <Header/>
       <div className='w-full flex flex-col gap-4'>
@@ -95,5 +116,5 @@ export default function page() {
       </div>
       <Footer/>
     </div>
-  )
+  : null)
 }

@@ -7,6 +7,11 @@ import axios from 'axios'
 import { Song } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { v4 as uuidv4 } from 'uuid'
+import { useSession } from "next-auth/react";
+import { loginIsRequiredClient } from '@/lib/clientHelper'
+import { isUserAdmin } from '@/lib/serverHelper'
+
+
 
 let apiLink = process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC_API_BASE_URL : process.env.PRODUCTION_URL
 
@@ -20,17 +25,35 @@ const options = option.map((option) => (
 
 export default function page({ params } : { params : { id : string}}) {
 
+  loginIsRequiredClient()
+  const session = useSession()
+
   const [rawData, setRawdata] = useState({
     id : params.id,
     removal : false,
     lineupType : option[0],
     lineupDate : new Date(Date.now()),
   })
+
+  
+  const [isAdmin, setIsAdmin] = useState(false)
   const [disabled, setDisabled] = useState(false)
   const router = useRouter()
   const [song, setSong] = useState<Song>()
   const [linupDate, setLinupDate] = useState<string>()
   const [lyrics, setLyrics] = useState<React.JSX.Element[] | React.JSX.Element>()
+
+  useEffect(() => {
+    const checkUser = async () => {
+      if(session.status === 'authenticated') {
+        const user = await isUserAdmin()
+
+        setIsAdmin(user)
+      }
+    }
+
+    checkUser()
+  }, [session])
 
   async function handleOnClick(e : React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault()
@@ -158,25 +181,28 @@ export default function page({ params } : { params : { id : string}}) {
             {lyrics}
           </p>
 
-          <div className='w-full mt-10 flex gap-6'>
-              <div className='w-full h-[56px] flex flex-col'>
-                <label className='font-montserrat text-[#757373] font-bold' htmlFor="type">Lineup For:</label>
-                <select disabled={disabled}  value={rawData.lineupType} onChange={(e) => { setRawdata({...rawData, lineupType : e.target.value})}} className='font-montserrat bg-primary h-full text-xs text-white font-semibold tracking-wider px-2 border-2 border-tertiary rounded-md' placeholder={"Song Type..."} name="type" id="type">
-                  {options}
-                </select>
-              </div>
+          {isAdmin ? 
+           <div>
+           <div className='w-full mt-10 flex gap-6'>
+               <div className='w-full h-[56px] flex flex-col'>
+                 <label className='font-montserrat text-[#757373] font-bold' htmlFor="type">Lineup For:</label>
+                 <select disabled={disabled}  value={rawData.lineupType} onChange={(e) => { setRawdata({...rawData, lineupType : e.target.value})}} className='font-montserrat bg-primary h-full text-xs text-white font-semibold tracking-wider px-2 border-2 border-tertiary rounded-md' placeholder={"Song Type..."} name="type" id="type">
+                   {options}
+                 </select>
+               </div>
 
-              <div className='w-full h-[56px] flex flex-col'>
-                <label className='font-montserrat text-[#757373] font-bold' htmlFor="type">Lineup Date</label>
-                <input  disabled={disabled}  onChange={(e) => {setRawdata({...rawData, lineupDate : new Date(e.target.value) })}} className='font-montserrat bg-primary font-semibold text-white text-xs p-2 border-2 rounded-md border-tertiary' id="linupDate" type='date'/>
-              </div>
-          </div>
-          
-          <div className='w-full py-4 flex gap-4'>
-              
-              {disabled ? <button onClick={(e) => {setRawdata({...rawData, removal : true})}} className=' hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white'>Remove From Linup</button> : <button onClick={(e) => {handleOnClick(e)}} className=' hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white'>Confirm</button>}
-              <button onClick={(e) => {router.push(`/song/edit/${params.id}`)}} className=' hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white'>Edit</button>
-          </div>
+               <div className='w-full h-[56px] flex flex-col'>
+                 <label className='font-montserrat text-[#757373] font-bold' htmlFor="type">Lineup Date</label>
+                 <input  disabled={disabled}  onChange={(e) => {setRawdata({...rawData, lineupDate : new Date(e.target.value) })}} className='font-montserrat bg-primary font-semibold text-white text-xs p-2 border-2 rounded-md border-tertiary' id="linupDate" type='date'/>
+               </div>
+           </div>
+           
+           <div className='w-full py-4 flex gap-4'>
+               
+               {disabled ? <button onClick={(e) => {setRawdata({...rawData, removal : true})}} className=' hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white'>Remove From Linup</button> : <button onClick={(e) => {handleOnClick(e)}} className=' hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white'>Confirm</button>}
+               <button onClick={(e) => {router.push(`/song/edit/${params.id}`)}} className=' hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white'>Edit</button>
+           </div>
+         </div> : null}
 
 
         </div>
