@@ -46,7 +46,6 @@ function transposeChord(chord: string, amount: number) {
 
 export default function page({ params } : { params : { id : string}}) {
 
-  loginIsRequiredClient()
   const session = useSession()
 
   const [rawData, setRawdata] = useState({
@@ -204,7 +203,7 @@ export default function page({ params } : { params : { id : string}}) {
             {lyrics}
           </p>
 
-           <div className='w-full flex items-center gap-2'>
+           <div className='w-full my-4 flex items-center gap-2'>
               <p className='font-montserrat text-sm font-bold'>Transpose</p>
               <button onClick={() => {setTransposeCount(transposeCount - 1)}}className='px-2 rounded-lg bg-gray-200 border-2 border-primary'><span className='font-montserrat font-bold text-primary'>-</span></button>
               <p className='font-montserrat text-sm font-bold'>{transposeCount}</p>
@@ -227,7 +226,7 @@ export default function page({ params } : { params : { id : string}}) {
                </div>
            </div>
            
-           <div className='w-full py-4 flex gap-4'>
+           <div className='w-full  py-4 flex gap-4'>
                
                {disabled ? <button onClick={(e) => {setRawdata({...rawData, removal : true})}} className=' hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white'>Remove From Linup</button> : <button onClick={(e) => {handleOnClick(e)}} className=' hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white'>Confirm</button>}
                <button onClick={(e) => {router.push(`/song/edit/${params.id}`)}} className=' hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white'>Edit</button>

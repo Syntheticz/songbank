@@ -27,7 +27,7 @@ export default function Home() {
   const router = useRouter()
 
   
-  loginIsRequiredClient()
+
 
 
 
@@ -141,7 +141,6 @@ export default function Home() {
   : []
 
 
-  if(session.status === "authenticated"){
     return(
       <div className='min-w-[360px] max-w-[2160px] w-full flex gap-8 flex-col items-center overflow-x-visible'>
       <Header/>
@@ -164,9 +163,7 @@ export default function Home() {
       
       <Footer/>
   </div> )
-  }else{
-    return null
-  }
+  
   
   
 }

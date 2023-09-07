@@ -69,15 +69,15 @@ export default function Header() {
             <div onClick={() => {router.push('/song/')}} className='w-full h-14 bg-tertiary flex items-center px-4'>
               <p className='cursor-pointer text-white font-montserrat text-2xl font-semibold'>View Songs</p>
             </div>
-            <div onClick={() => {handleOnClick()}} className='w-full h-14 bg-tertiary flex items-center px-4'>
+            <div onClick={() => {handleOnClick()}} className={`w-full h-14 bg-tertiary flex items-center px-4 ${session.status !== "authenticated" ? "hidden" : ""}`}>
               <p className='cursor-pointer text-white font-montserrat text-2xl font-semibold'>Logout</p>
             </div>
            
-
+        
         </div>
       </div>
 
-      <div className={`w-full h-full flex items-center justify-end ${session.status !== "authenticated" ? "hidden" : ""}`}>
+      <div className={`w-full h-full flex items-center justify-end `}>
         <button onClick={() => {
           setClicked(clicked ? false : true)
         }} className={` z-20 w-[44px] h-[44px] duration-300 ease-in-out ${clicked ? 'block' : 'flex flex-col'} ${clicked ? 'fixed' : 'block'}`} >
