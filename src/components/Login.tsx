@@ -31,6 +31,11 @@ export default function Login() {
     signIn("facebook", {callbackUrl : `${BASE_URL}`})
   }
 
+  function handleGoogle(e :  React.MouseEvent<HTMLButtonElement, MouseEvent>){
+    signIn("google", {callbackUrl : `${BASE_URL}`, redirect : false})
+  }
+
+
   useEffect(() => {
     setError({error : false, message : ''})
   }, [rawData])
@@ -86,14 +91,20 @@ export default function Login() {
             <span className='h-1 bg-primary w-full rounded-full opacity-50'></span>
           </div>
 
-          <div className='w-full px-6 mt-6 '>
+          <div className='w-full flex flex-col gap-2 px-6 mt-6 '>
            
-            <button onClick={(e) => {handleOnClick(e)}}className='w-full rounded-lg relative bg h-12 transition-all bg-[#1877f2] gap-2 flex items-center justify-center'>
+          {/* <button onClick={(e) => {handleOnClick(e)}}className='w-full rounded-lg relative bg h-12 transition-all bg-[#1877f2] gap-2 flex items-center justify-center'>
                 <svg fill="#FFFFFF" className='h-w w-8 mb-1 ' viewBox="0 0 24 24"><path d="M12.001 2.002c-5.522 0-9.999 4.477-9.999 9.999 0 4.99 3.656 9.126 8.437 9.879v-6.988h-2.54v-2.891h2.54V9.798c0-2.508 1.493-3.891 3.776-3.891 1.094 0 2.24.195 2.24.195v2.459h-1.264c-1.24 0-1.628.772-1.628 1.563v1.875h2.771l-.443 2.891h-2.328v6.988C18.344 21.129 22 16.992 22 12.001c0-5.522-4.477-9.999-9.999-9.999z"/></svg>      
                 <span className='font-montserrat text-sm font-bold tracking-wide text-white'>Continue with Facebook</span>
-              
-                </button>
+          </button> */}
+           
+          <button onClick={(e) => {handleGoogle(e)}} className='w-full rounded-lg relative bg h-12 transition-all border-2 border-gray-300 gap-2 flex items-center justify-center'>
+                <svg className='h-w w-6 mb-1 '  xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" viewBox="0 0 256 262" id="Google"><path fill="#4285f4" d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027" ></path><path fill="#34a853" d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055-34.523 0-63.824-22.773-74.269-54.25l-1.531.13-40.298 31.187-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"></path><path fill="#fbbc05" d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82 0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602l42.356-32.782"></path><path fill="#ea4335" d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0 79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"></path></svg>
+                <span className='font-montserrat text-sm font-bold tracking-wide '>Continue with Google</span>
+          </button>
           </div>
+
+          
           {error.error ? <ErrorComponent message={error.message} />  : null}
 
     </div>

@@ -36,13 +36,17 @@ export default function Home() {
   const [sunday, setSunday] = useState<string>('')
   const [sundayDate, setSundayDate] = useState<Date>()
 
- 
+  useEffect(() => {
+    const checkUser = async () => {
+      if(session.status === 'authenticated') await isUserStored()
+    }
+
+    checkUser()
+  }, [session])
 
   useEffect(() => {
 
     const fetchData = async () => {
-      if(session.status === 'authenticated') await isUserStored()
-
       
       const res = await fetch('/api/song')
       const data : Array<Song> = await res.json()

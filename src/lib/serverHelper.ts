@@ -17,8 +17,6 @@ export async function isUserStored(): Promise<void> {
     where: { email: email },
   });
 
-  const pass = await bcrypt.hash(randomUUID(), 10);
-
   if (users < 1) {
     const user = await prisma.users.create({
       data: {
