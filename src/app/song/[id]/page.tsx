@@ -21,6 +21,27 @@ const options = option.map((option) => (
   <option key={option} value={option}>{option}</option>
 ))
 
+type NormalizeMap = {
+  Cb: string;
+  Db: string;
+  Eb: string;
+  Fb: string;
+  Gb: string;
+  Ab: string;
+  Bb: string;
+  "E#": string;
+  "B#": string;
+}
+
+function transposeChord(chord: string, amount: number) {
+  const scale: string[] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  const normalizeMap: NormalizeMap = { Cb: "B", Db: "C#", Eb: "D#", Fb: "E", Gb: "F#", Ab: "G#", Bb: "A#", "E#": "F", "B#": "C" };
+
+  return chord.replace(/[CDEFGAB](b|#)?/g, function (match) {
+    var i = (scale.indexOf(normalizeMap[match as keyof NormalizeMap] || match) + amount) % scale.length;
+    return scale[i < 0 ? i + scale.length : i];
+  });
+}
 
 
 export default function page({ params } : { params : { id : string}}) {
@@ -42,6 +63,7 @@ export default function page({ params } : { params : { id : string}}) {
   const [song, setSong] = useState<Song>()
   const [linupDate, setLinupDate] = useState<string>()
   const [lyrics, setLyrics] = useState<React.JSX.Element[] | React.JSX.Element>()
+  const [transposeCount, setTransposeCount] = useState(0)
 
   useEffect(() => {
     const checkUser = async () => {
@@ -74,17 +96,18 @@ export default function page({ params } : { params : { id : string}}) {
     const lyricArray = song.lyrics.split('\n').map((line) => {return line === '' ? '\n' : line})
     const lyricComponent = lyricArray.map((line) =>{
         const regex = /\[([A-G][#bm]?(?:\d{1,2}|maj7?|min7?|sus2?)?)\]/g
-      
+        
         if(regex.test(line)){
-            const reg = /\[([A-Z][#bm]?(?:\d{1,2}|maj7?|min7?|sus2?)?)\]/g
+            const reg = /\[([A-G][#bm]?(?:\d{1,2}|maj7?|min7?|sus2?)?)\]/g
             const matches = line.split(reg);
 
             const spans = matches.map((char) => {
-              const regChar = /([A-Z][#bm]?(?:\d{1,2}|maj7?|min7?|sus2?)?)/g
+              const regChar = /([A-G][#bm]?(?:\d{1,2}|maj7?|min7?|sus2?)?)/g
               
               if(regChar.test(char)){
+                
                 return <span key={uuidv4()} className='font-semibold
-                 text-primary bg-gray-200 px-1 rounded-md'>{char}</span>
+                 text-primary bg-gray-200 px-1 rounded-md'>{transposeChord(char, transposeCount)}</span>
               }
               return <span key={uuidv4()}>{char}</span>
             })
@@ -101,7 +124,7 @@ export default function page({ params } : { params : { id : string}}) {
     setLyrics(lyricComponent)
     
 
-  }, [song?.lyrics])
+  }, [song?.lyrics, transposeCount])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -181,6 +204,13 @@ export default function page({ params } : { params : { id : string}}) {
             {lyrics}
           </p>
 
+           <div className='w-full flex items-center gap-2'>
+              <p className='font-montserrat text-sm font-bold'>Transpose</p>
+              <button onClick={() => {setTransposeCount(transposeCount - 1)}}className='px-2 rounded-lg bg-gray-200 border-2 border-primary'><span className='font-montserrat font-bold text-primary'>-</span></button>
+              <p className='font-montserrat text-sm font-bold'>{transposeCount}</p>
+              <button onClick={() => {setTransposeCount(transposeCount + 1)}}className='px-2 rounded-lg bg-gray-200 border-2 border-primary'><span className='font-montserrat font-bold text-primary'>+</span></button>
+           </div>
+
           {isAdmin ? 
            <div>
            <div className='w-full mt-10 flex gap-6'>
@@ -204,12 +234,13 @@ export default function page({ params } : { params : { id : string}}) {
            </div>
          </div> : null}
 
+        
 
         </div>
       </div>
       :
         <div className='w-full h-screen'>
-
+          
         </div>
       }
       <Footer/>
