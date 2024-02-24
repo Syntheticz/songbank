@@ -14,7 +14,8 @@ export async function GET(req: Request, route: { params: { id: string } }) {
 }
 
 export async function POST(req: Request, route: { params: { id: string } }) {
-  const { artist, category, lyrics, title, type }: Song = await req.json();
+  const { artist, category, lyrics, title, type, referenceLink, tags }: Song =
+    await req.json();
 
   const song = await prisma.song.update({
     where: { id: route.params.id },
@@ -24,6 +25,8 @@ export async function POST(req: Request, route: { params: { id: string } }) {
       lyrics: lyrics,
       title: title,
       type: type,
+      referenceLink: referenceLink,
+      tags: tags,
     },
   });
 

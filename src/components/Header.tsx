@@ -141,8 +141,20 @@ export default function Header() {
       </div>
 
       <div className="hidden w-full h-full md:flex justify-between">
-        <div className="h-full w-[300px]">
+        <div className="h-full w-[500px] flex items-center gap-4">
           <Search />
+          {isAdmin ? (
+            <div className="w-[40%] ">
+              <button
+                onClick={() => {
+                  router.push("song/add");
+                }}
+                className="text-primary font-montserrat font font-semibold"
+              >
+                Add Song
+              </button>
+            </div>
+          ) : null}
         </div>
 
         {session.status !== "authenticated" ? (

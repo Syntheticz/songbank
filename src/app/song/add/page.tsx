@@ -34,6 +34,7 @@ const emptyRawData: Song = {
   updatedAt: null,
   lyrics: " ",
   tags: [],
+  referenceLink: "",
 };
 
 export default function page() {
@@ -69,6 +70,7 @@ export default function page() {
     updatedAt: null,
     lyrics: " ",
     tags: [],
+    referenceLink: "",
   });
 
   async function handleOnClick(
@@ -88,64 +90,65 @@ export default function page() {
   return session.status === "authenticated" ? (
     <div className="w-full">
       <Header />
-      <div className="w-full flex flex-col gap-4">
-        <div className="flex flex-col px-6 gap-1">
-          <label
-            className="font-montserrat text-[#757373] font-bold"
-            htmlFor="title"
-          >
-            Title
-          </label>
-          <input
-            value={rawData.title}
-            onChange={(e) => {
-              setRawdata({ ...rawData, title: e.target.value });
-            }}
-            id="title"
-            className="bg-gray-200 border-2 w-full  font-montserrat text-xs h-10 p-2 placeholder:font-medium font-semibold border-primary rounded-md"
-            type="text"
-            placeholder="Type the title here..."
-          />
-        </div>
+      <div className="w-full flex">
+        <div className="w-[50%] flex flex-col gap-4">
+          <div className="flex flex-col px-6 gap-1">
+            <label
+              className="font-montserrat text-[#757373] font-bold"
+              htmlFor="title"
+            >
+              Title
+            </label>
+            <input
+              value={rawData.title}
+              onChange={(e) => {
+                setRawdata({ ...rawData, title: e.target.value });
+              }}
+              id="title"
+              className="bg-gray-200 border-2 w-full  font-montserrat text-xs h-10 p-2 placeholder:font-medium font-semibold border-primary rounded-md"
+              type="text"
+              placeholder="Type the title here..."
+            />
+          </div>
 
-        <div className="flex flex-col px-6 gap-1">
-          <label
-            className="font-montserrat text-[#757373] font-bold"
-            htmlFor="artist"
-          >
-            Artist
-          </label>
-          <input
-            value={rawData.artist}
-            onChange={(e) => {
-              setRawdata({ ...rawData, artist: e.target.value });
-            }}
-            id="artist"
-            className="bg-gray-200 border-2 w-full font-montserrat text-xs h-10 p-2 placeholder:font-medium font-semibold border-primary rounded-md"
-            type="text"
-            placeholder="Type the artist here..."
-          />
-        </div>
+          <div className="flex flex-col px-6 gap-1">
+            <label
+              className="font-montserrat text-[#757373] font-bold"
+              htmlFor="artist"
+            >
+              Artist
+            </label>
+            <input
+              value={rawData.artist}
+              onChange={(e) => {
+                setRawdata({ ...rawData, artist: e.target.value });
+              }}
+              id="artist"
+              className="bg-gray-200 border-2 w-full font-montserrat text-xs h-10 p-2 placeholder:font-medium font-semibold border-primary rounded-md"
+              type="text"
+              placeholder="Type the artist here..."
+            />
+          </div>
 
-        <div className="flex flex-col px-6 gap-1">
-          <label
-            className="font-montserrat text-[#757373] font-bold"
-            htmlFor="lyrics"
-          >
-            Lyrics
-          </label>
-          <textarea
-            value={rawData.lyrics}
-            onChange={(e) => {
-              setRawdata({ ...rawData, lyrics: e.target.value });
-            }}
-            id="lyrics"
-            className="bg-gray-200 border-2 w-full h-72 resize-none font-montserrat text-xs p-2 pr-4 placeholder:font-medium font-semibold border-primary rounded-md"
-            placeholder="Type the lyrics here..."
-          />
-        </div>
+          <div className="flex flex-col px-6 gap-1">
+            <label
+              className="font-montserrat text-[#757373] font-bold"
+              htmlFor="lyrics"
+            >
+              Lyrics
+            </label>
+            <textarea
+              value={rawData.lyrics}
+              onChange={(e) => {
+                setRawdata({ ...rawData, lyrics: e.target.value });
+              }}
+              id="lyrics"
+              className="bg-gray-200 border-2 w-full h-72 resize-none font-montserrat text-xs p-2 pr-4 placeholder:font-medium font-semibold border-primary rounded-md"
+              placeholder="Type the lyrics here..."
+            />
+          </div>
 
-        <div className="w-full px-6 flex gap-6">
+          {/* <div className="w-full px-6 flex gap-6">
           <Dropdown
             value={rawData.type}
             onChange={(e) => {
@@ -162,17 +165,57 @@ export default function page() {
             options={category}
             label="Category"
           />
+        </div> */}
+
+          <div className="w-full py-4 px-6">
+            <button
+              onClick={(e) => {
+                handleOnClick(e);
+              }}
+              className=" hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white"
+            >
+              + Add Song
+            </button>
+          </div>
         </div>
 
-        <div className="w-full py-4 px-6">
-          <button
-            onClick={(e) => {
-              handleOnClick(e);
-            }}
-            className=" hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white"
-          >
-            + Add Song
-          </button>
+        <div className="w-[50%] flex flex-col gap-4">
+          <div className="flex flex-col px-6 gap-1">
+            <label
+              className="font-montserrat text-[#757373] font-bold"
+              htmlFor="artist"
+            >
+              Tags
+            </label>
+            <input
+              value={rawData.tags.toString()}
+              onChange={(e) => {
+                setRawdata({ ...rawData, tags: e.target.value.split(",") });
+              }}
+              id="artist"
+              className="bg-gray-200 border-2 w-full font-montserrat text-xs h-10 p-2 placeholder:font-medium font-semibold border-primary rounded-md"
+              type="text"
+              placeholder="Type the tags here..."
+            />
+          </div>
+          <div className="flex flex-col px-6 gap-1">
+            <label
+              className="font-montserrat text-[#757373] font-bold"
+              htmlFor="artist"
+            >
+              Reference Link &#40;Optional&#41;
+            </label>
+            <input
+              value={rawData.referenceLink || ""}
+              onChange={(e) => {
+                setRawdata({ ...rawData, referenceLink: e.target.value });
+              }}
+              id="artist"
+              className="bg-gray-200 border-2 w-full font-montserrat text-xs h-10 p-2 placeholder:font-medium font-semibold border-primary rounded-md"
+              type="text"
+              placeholder="Type the tags here..."
+            />
+          </div>
         </div>
       </div>
       <div className="w-full h-40"></div>

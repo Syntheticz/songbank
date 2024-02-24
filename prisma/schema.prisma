@@ -19,16 +19,17 @@ enum LINUPTYPE {
 }
 
 model Song {
-  id         String     @id @default(auto()) @map("_id") @db.ObjectId
-  title      String
-  artist     String
-  lyrics     String
-  category   String
-  type       String
-  lineupDate DateTime?
-  linupType  LINUPTYPE?
-  votes      Int
-  tags       String[]
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  artist        String
+  lyrics        String
+  category      String
+  type          String
+  lineupDate    DateTime?
+  linupType     LINUPTYPE?
+  votes         Int
+  tags          String[]
+  referenceLink String?
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt

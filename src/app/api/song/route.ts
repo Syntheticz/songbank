@@ -22,8 +22,16 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const { artist, category, lyrics, title, type, votes }: Song =
-    await req.json();
+  const {
+    artist,
+    category,
+    lyrics,
+    title,
+    type,
+    votes,
+    tags,
+    referenceLink,
+  }: Song = await req.json();
 
   const song = await prisma.song.create({
     data: {
@@ -37,6 +45,8 @@ export async function POST(req: Request) {
       createdAt: new Date(Date.now()),
       linupType: null,
       updatedAt: new Date(Date.now()),
+      tags: tags,
+      referenceLink: referenceLink,
     },
   });
 

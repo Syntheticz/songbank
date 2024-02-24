@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useSession } from "next-auth/react";
 import { loginIsRequiredClient } from "@/lib/clientHelper";
 import { isUserAdmin } from "@/lib/serverHelper";
+import ReferenceVideo from "@/components/ReferenceVideo";
 
 let apiLink =
   process.env.NODE_ENV === "development"
@@ -221,6 +222,15 @@ export default function page({ params }: { params: { id: string } }) {
     }
   }, [rawData.removal]);
 
+  const tags = song?.tags.map((tag) => (
+    <span
+      key={tag}
+      className="font-montserrat text-xs tracking-wider border-2 border-primary bg-primary p-1 rounded-lg bg-opacity-80 text-white"
+    >
+      {tag}
+    </span>
+  ));
+
   return (
     <div className="w-full">
       <Header />
@@ -242,6 +252,7 @@ export default function page({ params }: { params: { id: string } }) {
               <p className="font-montserrat font-semibold text-[14px] mt-[-8px]">
                 By: {song.artist}
               </p>
+              <div className="w-[400px] mt-1 flex flex-wrap gap-1">{tags}</div>
             </div>
             <p className="w-full whitespace-pre-wrap text-sm flex flex-col font-montserrat font-medium">
               {lyrics}
@@ -277,6 +288,11 @@ export default function page({ params }: { params: { id: string } }) {
                 </span>
               </button>
             </div>
+            {song.referenceLink && song.referenceLink !== "" ? (
+              <div className="md:absolute md:right-4">
+                <ReferenceVideo link={song.referenceLink} />
+              </div>
+            ) : null}
 
             {isAdmin ? (
               <div className="w-[400px]">
