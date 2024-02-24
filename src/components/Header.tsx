@@ -125,26 +125,39 @@ export default function Header() {
               View Songs
             </p>
           </div>
-          <div
-            onClick={() => {
-              handleOnClick();
-            }}
-            className={`w-full h-14 bg-tertiary flex items-center px-4 ${
-              session.status !== "authenticated" ? "hidden" : ""
-            }`}
-          >
-            <p className="cursor-pointer text-white font-montserrat text-2xl font-semibold">
-              Logout
-            </p>
-          </div>
+          {session.status !== "authenticated" ? (
+            <div
+              onClick={() => {
+                router.push("/login");
+              }}
+              className={`w-full h-14 bg-tertiary flex items-center px-4 $`}
+            >
+              <p className="cursor-pointer text-white font-montserrat text-2xl font-semibold">
+                Log in
+              </p>
+            </div>
+          ) : (
+            <div
+              onClick={() => {
+                handleOnClick();
+              }}
+              className={`w-full h-14 bg-tertiary flex items-center px-4 ${
+                session.status !== "authenticated" ? "hidden" : ""
+              }`}
+            >
+              <p className="cursor-pointer text-white font-montserrat text-2xl font-semibold">
+                Logout
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="hidden w-full h-full md:flex justify-between">
-        <div className="h-full w-[500px] flex items-center gap-4">
+      <div className=" w-full h-full md:flex justify-between">
+        <div className="h-full w-[280px] md:w-[500px] flex items-center gap-4">
           <Search />
           {isAdmin ? (
-            <div className="w-[40%] ">
+            <div className="w-[40%] hidden md:block ">
               <button
                 onClick={() => {
                   router.push("song/add");
@@ -162,7 +175,7 @@ export default function Header() {
             onClick={() => {
               router.push("/login");
             }}
-            className="text-primary font-montserrat font font-semibold"
+            className="hidden md:block text-primary font-montserrat font font-semibold"
           >
             Log In
           </button>
@@ -171,7 +184,7 @@ export default function Header() {
             onClick={() => {
               signOut();
             }}
-            className="text-primary font-montserrat font font-semibold"
+            className="hidden md:block text-primary font-montserrat font font-semibold"
           >
             Log Out
           </button>
