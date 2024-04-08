@@ -14,6 +14,15 @@ import { isUserStored } from "@/lib/serverHelper";
 
 export const dynamic = "force-dynamic";
 
+const currentDate = new Date();
+const daysUntilSunday = 7 - currentDate.getDay();
+const upcomingSunday = new Date(currentDate);
+upcomingSunday.setDate(currentDate.getDate() + daysUntilSunday);
+const prevSunday = new Date(upcomingSunday);
+prevSunday.setDate(prevSunday.getDate() - 7);
+const thursDate = new Date(prevSunday);
+thursDate.setDate(thursDate.getDate() + 4);
+
 export default function Home() {
   const session = useSession();
   const router = useRouter();
@@ -21,7 +30,7 @@ export default function Home() {
   const [songs, setSongs] = useState<Array<Song>>([]);
 
   const [sunday, setSunday] = useState<string>("");
-  const [sundayDate, setSundayDate] = useState<Date>();
+  const [sundayDate, setSundayDate] = useState<Date>(upcomingSunday);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -40,23 +49,23 @@ export default function Home() {
     };
 
     fetchData();
-
-    const currentDate = new Date();
-    const daysUntilSunday = 7 - currentDate.getDay();
-    const upcomingSunday = new Date(currentDate);
-    upcomingSunday.setDate(currentDate.getDate() + daysUntilSunday);
-
-    setSundayDate(upcomingSunday);
   }, []);
 
   useEffect(() => {
     setSunday(
-      sundayDate?.toLocaleDateString("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      }) || ""
+      currentDate <= thursDate
+        ? prevSunday.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          }) || ""
+        : sundayDate.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          }) || ""
     );
   }, [sundayDate]);
 
@@ -86,104 +95,104 @@ export default function Home() {
   const preludeCards =
     songs.length > 0
       ? songs.map((song, index) => {
-          const date = sundayDate?.toISOString().substring(10, 0);
-          const linupDate = song.lineupDate
-            ? new Date(song.lineupDate).toISOString().substring(10, 0)
-            : "";
-
-          if (song.linupType !== "PRELUDE" || date !== linupDate) {
+          if (song.linupType !== "PRELUDE" || song.lineupDate === null) {
             return null;
           }
 
-          return (
-            <LineupCard
-              onClick={() => {
-                router.push(`/song/${song.id}`);
-              }}
-              color={index % 2 === 0 ? "bg-primary" : "bg-secondary"}
-              artist={song.artist}
-              title={song.title}
-              key={song.id}
-            />
-          );
+          const linupDate = new Date(song.lineupDate);
+
+          if (linupDate >= prevSunday && currentDate <= thursDate) {
+            return (
+              <LineupCard
+                onClick={() => {
+                  router.push(`/song/${song.id}`);
+                }}
+                color={index % 2 === 0 ? "bg-primary" : "bg-secondary"}
+                artist={song.artist}
+                title={song.title}
+                key={song.id}
+              />
+            );
+          }
+          return null;
         })
       : [];
 
   const responseCards =
     songs.length > 0
       ? songs.map((song, index) => {
-          const date = sundayDate?.toISOString().substring(10, 0);
-          const linupDate = song.lineupDate
-            ? new Date(song.lineupDate).toISOString().substring(10, 0)
-            : "";
-
-          if (song.linupType !== "RESPONSE" || date !== linupDate) {
+          if (song.linupType !== "RESPONSE" || song.lineupDate === null) {
             return null;
           }
 
-          return (
-            <LineupCard
-              onClick={() => {
-                router.push(`/song/${song.id}`);
-              }}
-              color={index % 2 === 0 ? "bg-primary" : "bg-secondary"}
-              artist={song.artist}
-              title={song.title}
-              key={song.id}
-            />
-          );
+          const linupDate = new Date(song.lineupDate);
+
+          if (linupDate >= prevSunday && currentDate <= thursDate) {
+            return (
+              <LineupCard
+                onClick={() => {
+                  router.push(`/song/${song.id}`);
+                }}
+                color={index % 2 === 0 ? "bg-primary" : "bg-secondary"}
+                artist={song.artist}
+                title={song.title}
+                key={song.id}
+              />
+            );
+          }
+          return null;
         })
       : [];
 
   const adultCards =
     songs.length > 0
       ? songs.map((song, index) => {
-          const date = sundayDate?.toISOString().substring(10, 0);
-          const linupDate = song.lineupDate
-            ? new Date(song.lineupDate).toISOString().substring(10, 0)
-            : "";
-
-          if (song.linupType !== "ADULT" || date !== linupDate) {
+          if (song.linupType !== "ADULT" || song.lineupDate === null) {
             return null;
           }
 
-          return (
-            <LineupCard
-              onClick={() => {
-                router.push(`/song/${song.id}`);
-              }}
-              color={index % 2 === 0 ? "bg-primary" : "bg-secondary"}
-              artist={song.artist}
-              title={song.title}
-              key={song.id}
-            />
-          );
+          const linupDate = new Date(song.lineupDate);
+
+          if (linupDate >= prevSunday && currentDate <= thursDate) {
+            return (
+              <LineupCard
+                onClick={() => {
+                  router.push(`/song/${song.id}`);
+                }}
+                color={index % 2 === 0 ? "bg-primary" : "bg-secondary"}
+                artist={song.artist}
+                title={song.title}
+                key={song.id}
+              />
+            );
+          }
+          return null;
         })
       : [];
 
   const youthCards =
     songs.length > 0
       ? songs.map((song, index) => {
-          const date = sundayDate?.toISOString().substring(10, 0);
-          const linupDate = song.lineupDate
-            ? new Date(song.lineupDate).toISOString().substring(10, 0)
-            : "";
-
-          if (song.linupType !== "YOUTH" || date !== linupDate) {
+          if (song.linupType !== "YOUTH" || song.lineupDate === null) {
             return null;
           }
 
-          return (
-            <LineupCard
-              onClick={() => {
-                router.push(`/song/${song.id}`);
-              }}
-              color={index % 2 === 0 ? "bg-primary" : "bg-secondary"}
-              artist={song.artist}
-              title={song.title}
-              key={song.id}
-            />
-          );
+          const linupDate = new Date(song.lineupDate);
+
+          if (linupDate >= prevSunday && currentDate <= thursDate) {
+            return (
+              <LineupCard
+                onClick={() => {
+                  router.push(`/song/${song.id}`);
+                }}
+                color={index % 2 === 0 ? "bg-primary" : "bg-secondary"}
+                artist={song.artist}
+                title={song.title}
+                key={song.id}
+              />
+            );
+          }
+          return null;
         })
       : [];
 
@@ -215,7 +224,7 @@ export default function Home() {
           </div>
           <div className="w-full md:w-[37%] md:h-[300px] md:overflow-auto ">
             <Category
-              title={"Adult Band"}
+              title={"Proper Service"}
               cards={
                 adultCards.every((element) => element === null)
                   ? []
@@ -225,7 +234,7 @@ export default function Home() {
           </div>
           <div className="w-full md:w-[37%] md:h-[300px]">
             <Category
-              title={"Youth Band"}
+              title={"Youth Service"}
               cards={
                 youthCards.every((element) => element === null)
                   ? []

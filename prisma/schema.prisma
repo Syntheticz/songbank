@@ -28,7 +28,7 @@ model Song {
   lineupDate    DateTime?
   linupType     LINUPTYPE?
   votes         Int
-  tags          String[]
+  tags          String?
   referenceLink String?
 
   createdAt DateTime? @default(now())

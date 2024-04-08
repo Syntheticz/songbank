@@ -28,7 +28,7 @@ const emptyRawData: Song = {
   linupType: null,
   updatedAt: null,
   lyrics: " ",
-  tags: [],
+  tags: "",
   referenceLink: "",
 };
 
@@ -69,7 +69,7 @@ export default function page({ params }: { params: { id: string } }) {
     linupType: null,
     updatedAt: null,
     lyrics: " ",
-    tags: [],
+    tags: "",
     referenceLink: "",
   });
 
@@ -213,9 +213,9 @@ export default function page({ params }: { params: { id: string } }) {
               Tags
             </label>
             <input
-              value={rawData.tags.toString()}
+              value={rawData.tags || ""}
               onChange={(e) => {
-                setRawdata({ ...rawData, tags: e.target.value.split(",") });
+                setRawdata({ ...rawData, tags: e.target.value });
               }}
               id="artist"
               className="bg-gray-200 border-2 w-full font-montserrat text-xs h-10 p-2 placeholder:font-medium font-semibold border-primary rounded-md"

@@ -33,7 +33,7 @@ const emptyRawData: Song = {
   linupType: null,
   updatedAt: null,
   lyrics: " ",
-  tags: [],
+  tags: "",
   referenceLink: "",
 };
 
@@ -69,7 +69,7 @@ export default function page() {
     linupType: null,
     updatedAt: null,
     lyrics: " ",
-    tags: [],
+    tags: "",
     referenceLink: "",
   });
 
@@ -90,8 +90,8 @@ export default function page() {
   return session.status === "authenticated" ? (
     <div className="w-full">
       <Header />
-      <div className="w-full flex">
-        <div className="w-[50%] flex flex-col gap-4">
+      <div className="w-full flex flex-col sm:flex-row">
+        <div className="w-full sm:w-[50%] flex flex-col gap-4">
           <div className="flex flex-col px-6 gap-1">
             <label
               className="font-montserrat text-[#757373] font-bold"
@@ -147,39 +147,9 @@ export default function page() {
               placeholder="Type the lyrics here..."
             />
           </div>
-
-          {/* <div className="w-full px-6 flex gap-6">
-          <Dropdown
-            value={rawData.type}
-            onChange={(e) => {
-              setRawdata({ ...rawData, type: e.target.value });
-            }}
-            options={songType}
-            label="Song type"
-          />
-          <Dropdown
-            value={rawData.category}
-            onChange={(e) => {
-              setRawdata({ ...rawData, category: e.target.value });
-            }}
-            options={category}
-            label="Category"
-          />
-        </div> */}
-
-          <div className="w-full py-4 px-6">
-            <button
-              onClick={(e) => {
-                handleOnClick(e);
-              }}
-              className=" hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white"
-            >
-              + Add Song
-            </button>
-          </div>
         </div>
 
-        <div className="w-[50%] flex flex-col gap-4">
+        <div className="w-full sm:w-[50%] flex flex-col gap-4">
           <div className="flex flex-col px-6 gap-1">
             <label
               className="font-montserrat text-[#757373] font-bold"
@@ -188,9 +158,9 @@ export default function page() {
               Tags
             </label>
             <input
-              value={rawData.tags.toString()}
+              value={rawData.tags || ""}
               onChange={(e) => {
-                setRawdata({ ...rawData, tags: e.target.value.split(",") });
+                setRawdata({ ...rawData, tags: e.target.value });
               }}
               id="artist"
               className="bg-gray-200 border-2 w-full font-montserrat text-xs h-10 p-2 placeholder:font-medium font-semibold border-primary rounded-md"
@@ -215,6 +185,16 @@ export default function page() {
               type="text"
               placeholder="Type the tags here..."
             />
+          </div>
+          <div className="w-full py-4 px-6">
+            <button
+              onClick={(e) => {
+                handleOnClick(e);
+              }}
+              className=" hover:text-primary hover:bg-white hover:border-primary hover:border-2 p-2 px-3 transition-all bg-primary border-2 text-sm border-tertiary font-montserrat font-semibold rounded-md text-white drop-shadow-md active:bg-primary active:text-white"
+            >
+              + Add Song
+            </button>
           </div>
         </div>
       </div>

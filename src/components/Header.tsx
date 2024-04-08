@@ -105,7 +105,8 @@ export default function Header() {
           </div>
           {isAdmin ? (
             <div
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 router.push("/song/add");
               }}
               className="w-full h-14 bg-tertiary flex items-center px-4"
@@ -160,7 +161,7 @@ export default function Header() {
             <div className="w-[40%] hidden md:block ">
               <button
                 onClick={() => {
-                  router.push("song/add");
+                  router.push("/song/add");
                 }}
                 className="text-primary font-montserrat font font-semibold"
               >

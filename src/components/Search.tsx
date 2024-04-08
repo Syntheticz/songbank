@@ -25,16 +25,14 @@ export default function Search() {
 
     const fetchRecords = async () => {
       const res = await querySongs(10, query);
+
       const list: Options[] = res.map((record) => ({
         id: record.id,
         name: record.title,
         subtext: record.artist,
       }));
 
-      const records = list.filter((option) =>
-        option.name.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredList(records);
+      setFilteredList(list);
     };
     fetchRecords();
   }, [query]);

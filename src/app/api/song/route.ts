@@ -18,6 +18,8 @@ export async function GET(req: Request) {
     },
   });
 
+  await prisma.$disconnect();
+
   return res.json(songs);
 }
 
